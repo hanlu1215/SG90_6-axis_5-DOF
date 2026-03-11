@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta  charset='UTF-8'>
+<title>创客与编程</title>
+  <style type='text/css'>
+    .txt{
+      width :30px;
+      height:20px;
+    }
+  </style>
+</head>
+<body>
+ <center>
+
+   <h1>创客与编程-机械臂固件配置</h1>
+   <p>警告:舵机不防堵,转不过去的角度需要最大最小限制,不然会发烫烧坏</P>
+   <form action='config' method='get'>
+    <p style="color: red;">
+    AP_SSID:<input type='text' id='AP_SSID' name='AP_SSID' value=''>控制板要创建的 WIFI 2.4G热点<br>
+    &nbspAP_PSK:<input type='text' id='AP_PSK' name='AP_PSK' value=''>控制板要创建的 WIFI 热点密码<br>
+   </p>
+    <p style="color: red;">
+   STA_SSID:<input type='text' id='STA_SSID' name='STA_SSID' value=''>控制板要连接路由器的2.4G热点<br>
+   &nbspSTA_PSK:<input type='text' id='STA_PSK' name='STA_PSK' value=''>路由器热点密码,删除可跳过连接<br>
+    &nbsp BlinKey:<input type='text' id='BlinKey' name='BlinKey' value=''>点灯.blinker APP独立设备密钥<br>
+    启用 blinker  会关闭控制板WIFI热点,可用局域网IP访问控制网页
+    </p>
+    <p style="color: red;">
+    远程TCP服务器IP<input type='text' style='width:100px;' id='SIP' name='SIP' value=''> 端口:<input type='text' style='width:40px;' id='SPort' name='SPort' value=''> 
+     &nbsp&nbspUDP端口:<input type='text' style='width:40px;' id='UPort' name='UPort' value=''><br>
+     若有配置TCP远程服务器IP,会每2分钟尝试连接一次.直到连上为止
+    </p>
+    <p>
+   舵机编号:<input type='text' class='txt'  readonly='readonly' value='X'>
+            <input type='text' class='txt'  readonly='readonly' value='Y'>
+            <input type='text' class='txt'  readonly='readonly' value='Z'>
+           <input type='text' class='txt'  readonly='readonly' value='B'>
+            <input type='text' class='txt'  readonly='readonly' value='T'>
+           <input type='text' class='txt'  readonly='readonly' value='E'>
+    &nbsp各舵机&nbsp&nbsp编号名称</br>
+
+   <span style="color: red;">引脚gpio:</span><input type='text' class='txt'  readonly='readonly' id='XPin'  name='XPin' value=''>
+            <input type='text' class='txt'  readonly='readonly' id='YPin'  name='YPin' value=''>
+            <input type='text' class='txt'  readonly='readonly' id='ZPin'  name='ZPin' value=''>
+            <input type='text' class='txt'  readonly='readonly' id='BPin'  name='BPin' value=''>
+           <input type='text'  class='txt'  readonly='readonly' id='TPin'  name='TPin' value=''>
+           <input type='text'  class='txt'  readonly='readonly' id='EPin'  name='EPin' value=''>
+    &nbsp各舵机&nbsp&nbsp所插引脚</br>
+
+    <span style="color: red;">初始角度:</span><input type='text' class='txt' id='XRaw' name='XRaw' value=''>
+           <input type='text' class='txt' id='YRaw'  name='YRaw' value=''>
+           <input type='text' class='txt' id='ZRaw'  name='ZRaw' value=''>
+           <input type='text' class='txt' id='BRaw'  name='BRaw' value=''>
+           <input type='text' class='txt' id='TRaw'  name='TRaw' value=''>
+           <input type='text' class='txt' id='ERaw'  name='ERaw' value=''>
+    舵机通电初始角度<br>
+
+    最小角度:<input type='text' class='txt' id='XMin'  name='XMin' value=''>
+            <input type='text' class='txt' id='YMin'  name='YMin' value=''>
+            <input type='text' class='txt' id='ZMin'  name='ZMin' value=''>
+            <input type='text' class='txt' id='BMin'  name='BMin' value=''>
+            <input type='text' class='txt' id='TMin'  name='TMin' value=''>
+            <input type='text' class='txt' id='EMin'  name='EMin' value=''>
+    舵机最小角度限制<br>
+
+   最大角度:<input type='text' class='txt' id='XMax'  name='XMax' value=''>
+           <input type='text' class='txt' id='YMax'  name='YMax' value=''>
+           <input type='text' class='txt' id='ZMax'  name='ZMax' value=''>
+           <input type='text' class='txt' id='BMax'  name='BMax' value=''>
+           <input type='text' class='txt' id='TMax'  name='TMax' value=''>
+           <input type='text' class='txt' id='EMax'  name='EMax' value=''>
+    舵机最大角度限制<br>
+    </p>
+
+     <p style="color: red;">
+          触发按钮1.引脚GPIO<input type='text' style='width:40px;' id='B1P' name='B1P' value=''>接触<select id="B1G" name="B1G"><option value="0">GND</option><option value="1" selected>5V</option></select> 时执行<input type='text' style='width:120px;' id='B1R' name='B1R'   value='' ><br>
+          触发按钮2.引脚GPIO<input type='text' style='width:40px;' id='B2P' name='B2P' value=''>接触<select id="B2G" name="B2G"><option value="0">GND</option><option value="1" selected>5V</option></select> 时执行<input type='text' style='width:120px;' id='B2R' name='B2R'   value='' ><br>
+    开机就执行:<input type='text' style='width:130px;height:20px;' id='Auto'  name='Auto' value=''>如填 Auto.txt 5  五次,  -1 为无限次<br>
+    </p>
+    <p><a href='/index.html'  >[回首页]</a>&nbsp&nbsp
+       <input type='submit' value='提交设置'><span style="color: red;">&nbsp红字行</span>提交控制板会重启再生效,连WIFI,重开网页<br>
+      发送命令<span style="color: red;"> C config.json;re;  </span>可以删除固件配置文件并重启恢复默认设置
+    </p>
+
+
+   </form>
+</center>
+
+<script>
+	function ready() {
+		if (this.readyState == 4 && this.status == 200) {
+			//使用 XMLHttpRequest 对象的 responseText 接收响应数据
+                       var txt = this.responseText;
+                        var i=txt.indexOf("{");
+                        if(i>=0) {
+                           txt=txt.substr(i);                                 //提取JSON内容
+			   var d = JSON.parse(txt);     
+                           if(d.AP_SSID){
+                              document.getElementById("AP_SSID").value=d.AP_SSID;
+                              document.getElementById("AP_PSK").value=d.AP_PSK; 
+                              document.getElementById("STA_SSID").value=d.STA_SSID; 
+                              document.getElementById("STA_PSK").value=d.STA_PSK; 
+                              document.getElementById("BlinKey").value=d.BlinKey; 
+                              document.getElementById("SIP").value=d.SIP; 
+                              document.getElementById("SPort").value=d.SPort; 
+                              document.getElementById("UPort").value=d.UPort; 
+
+                              document.getElementById("XPin").value=d.Pin[0]; 
+                              document.getElementById("YPin").value=d.Pin[1]; 
+                              document.getElementById("ZPin").value=d.Pin[2]; 
+                              document.getElementById("BPin").value=d.Pin[3]; 
+                              document.getElementById("TPin").value=d.Pin[4]; 
+                              document.getElementById("EPin").value=d.Pin[5]; 
+
+
+                              document.getElementById("XRaw").value=d.Raw[0]; 
+                              document.getElementById("YRaw").value=d.Raw[1]; 
+                              document.getElementById("ZRaw").value=d.Raw[2]; 
+                              document.getElementById("BRaw").value=d.Raw[3]; 
+                              document.getElementById("TRaw").value=d.Raw[4]; 
+                              document.getElementById("ERaw").value=d.Raw[5]; 
+
+                              document.getElementById("XMin").value=d.Min[0]; 
+                              document.getElementById("YMin").value=d.Min[1]; 
+                              document.getElementById("ZMin").value=d.Min[2]; 
+                              document.getElementById("BMin").value=d.Min[3]; 
+                              document.getElementById("TMin").value=d.Min[4]; 
+                              document.getElementById("EMin").value=d.Min[5]; 
+
+                              document.getElementById("XMax").value=d.Max[0]; 
+                              document.getElementById("YMax").value=d.Max[1]; 
+                              document.getElementById("ZMax").value=d.Max[2]; 
+                              document.getElementById("BMax").value=d.Max[3]; 
+                              document.getElementById("TMax").value=d.Max[4]; 
+                              document.getElementById("EMax").value=d.Max[5]; 
+
+                              document.getElementById("B1P").value=d.B1[0]; 
+                              document.getElementById("B1G").selectedIndex=d.B1[1]; 
+                              document.getElementById("B1R").value=d.B1R; 
+                              document.getElementById("B2P").value=d.B2[0]; 
+                              document.getElementById("B2G").selectedIndex=d.B2[1]; 
+                              document.getElementById("B2R").value=d.B2R; 
+                              document.getElementById("Auto").value=d.Auto; 
+                           }
+                        }
+		}
+	}
+
+   function  send(id) {
+       var       a=document.getElementById(id);
+	var arg = "config?"+a.name+"="+a.value;   
+	xhttp.onreadystatechange = ready;
+	xhttp.open("GET",arg,true);    //支持GET和POST
+	xhttp.send();
+   }
+
+
+   var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = ready;
+	xhttp.open("GET","config.json",true);    //支持GET和POST
+	xhttp.send();
+ 
+  document.getElementById('XMin').addEventListener('change', () => { send('XMin'); });  
+  document.getElementById('YMin').addEventListener('change', () => { send('YMin'); });  
+  document.getElementById('ZMin').addEventListener('change', () => { send('ZMin'); });  
+  document.getElementById('BMin').addEventListener('change', () => { send('BMin'); });  
+  document.getElementById('TMin').addEventListener('change', () => { send('TMin'); });  
+  document.getElementById('EMin').addEventListener('change', () => { send('EMin'); });  
+  document.getElementById('XMax').addEventListener('change', () => { send('XMax'); });  
+  document.getElementById('YMax').addEventListener('change', () => { send('YMax'); });  
+  document.getElementById('ZMax').addEventListener('change', () => { send('ZMax'); });  
+  document.getElementById('BMax').addEventListener('change', () => { send('BMax'); });  
+  document.getElementById('TMax').addEventListener('change', () => { send('TMax'); });  
+  document.getElementById('EMax').addEventListener('change', () => { send('EMax'); });  
+
+</script>
+</body>
+</html>

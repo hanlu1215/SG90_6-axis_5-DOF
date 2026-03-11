@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>创客与编程</title>
+    <style type="text/css">
+        .btn{
+           width :60px;
+           height:40px;
+           font-style:黑体;
+           font-size:20px;
+           color:#FF0000;
+       }
+        .rge{
+           width :280px;
+       }
+    </style>
+</head>
+<body>
+<center>
+    <h1>创客与编程-机械臂网页控制</h1>
+    <p>警告:舵机不防堵,不要长时间夹着物件不放,会发烫烧坏</br>
+  <p>
+    <button type="button" class="btn" onclick="change('E','EV',-1)">E--</button>
+    <input  type="range"  class="rge" id="E" min="45" max="100" step="1" value="85" oninput="input('E','EV')" onchange="change('E','EV',0)">
+    <span id="EV" >85</span>
+    <button type="button" class="btn" onclick="change('E','EV',+1)">E++</button>
+  </p>
+
+  <p>
+    <button type="button" class="btn" onclick="change('T','TV',-1)">T--</button>
+    <input  type="range"  class="rge" id="T" min="0" max="180" step="1" value="90" oninput="input('T','TV')" onchange="change('T','TV',0)">
+    <span id="TV" >90</span>
+    <button type="button" class="btn" onclick="change('T','TV',+1)">T++</button>
+  </p>
+
+  <p>
+    <button type="button" class="btn" onclick="change('B','BV',-1)">B--</button>
+    <input  type="range"  class="rge" id="B" min="0" max="180" step="1" value="90" oninput="input('B','BV')" onchange="change('B','BV',0)">
+    <span id="BV" >90</span>
+    <button type="button" class="btn" onclick="change('B','BV',+1)">B++</button>
+  </p>
+
+  <p>
+    <button type="button" class="btn" onclick="change('Z','ZV',-1)">Z--</button>
+    <input  type="range"  class="rge" id="Z" min="0" max="180" step="1" value="90" oninput="input('Z','ZV')" onchange="change('Z','ZV',0)">
+    <span id="ZV" >90</span>
+    <button type="button" class="btn" onclick="change('Z','ZV',+1)">Z++</button>
+  </p>
+
+
+  <p>
+    <button type="button" class="btn" onclick="change('Y','YV',-1)">Y--</button>
+    <input  type="range"  class="rge" id="Y" min="55" max="180" step="1" value="90" oninput="input('Y','YV')" onchange="change('Y','YV',0)">
+    <span id="YV" >90</span>
+    <button type="button" class="btn" onclick="change('Y','YV',+1)">Y++</button>
+  </p>
+
+  <p>
+    <button type="button" class="btn" onclick="change('X','XV',-1)">X--</button>
+    <input  type="range"  class="rge" id="X" min="0" max="180" step="1" value="90"  oninput="input('X','XV')" onchange="change('X','XV',0)">
+    <span id="XV" >90</span>
+    <button type="button" class="btn" onclick="change('X','XV',+1)">X++</button>
+  </p>
+
+  <p>指令
+    <input   type="text"  style="width:300px;height:30px;" name="cmd" id="cmd"  onkeydown="send()"  value="XYZ ?,?,?,?,?,75;delay 2000;H.txt" tabindex="1">
+    <button type="button" style="height:30px;" onclick="sendData(null)" autofocus>发送</button> 
+    <label>  
+    <input type="checkbox" id='sync' name="sync" >同步
+  </label>
+  </p>
+  <P>
+    <button type="button" style="height:30px;" onclick="sendData('H')">H 全部归位</button>
+    <button type="button" style="height:30px;" onclick="sendData('S')">S 保存姿态</button>
+    <button type="button" style="height:30px;" onclick="sendData('D')">D 回滚姿态</button>
+    <button type="button" style="height:30px;" onclick="sendData('R')" id="FB">R 执行脚本</button>
+    <button type="button" style="height:30px;" onclick="sendData('Stop')">STOP 停止</button>
+  </P>
+
+    <textarea id="RET" rows="22" cols="66" readonly="readonly">
+RE		重启 ESP8266 控制板
+DIR		列出控制板闪存里的所有文件
+? HELP.txt	查看指定文件内容,如 ? Auto.txt
+F Auto.txt	指定动作文件,之后的 SDRC 将操作此文件
+SH		保存所有舵机当前位置角度到 H.txt 文件
+S		往F指定文件添加 有转动过的舵机当前角度
+S 1000 		往F指定文件添加延时指令 S 1000=S delay 1000
+S X 90		往F指定文件添加 X90 指令,例如 S X+10;S Y-20
+D 3		在F指定文件删除 末尾 N条指令;D=D 1 删末尾1条
+Auto.txt 3	执行Auto.txt动作文件3次=Auto 3=R 3;R=R Auto.txt 1次
+C Auto.txt	删除开发板闪存里指定文件;格式化 见源代码,需重新上传
+
+step 0		调整舵机转动速度,原速 step 0 ,减速 step 1
+舵机转动角度(0度-180度)控制.底座X,Y,Z,B,T,E为夹子 勿一直夹着
+H		执行H.txt使 XYZE 舵机回归设定角度,用SH设定H.txt内容
+X 90.5;Y ?	执行后 X 舵机转到 90.5度,Y 转到随机角度,? 是随机值
+X ++;Y --	执行后 X 舵机角度 +1度,Y 舵机角度 -1度,同 X+1;Y-1;
+X +10;Y -10	执行后 X 舵机角度+10度,Y 舵机角度-10度,舵机不防堵
+time 5000 H	为倒计时和定时功能,更多指令的居体用法见 [指令说明]
+
+</textarea></br>
+
+    <a href='/index.html'      >[首页]</a>
+    <a href='/upload.html'    target="_blank">[上传文件]</a>
+    <a href='/Auto.txt'           target="_blank"  id="F">[Auto.txt]</a>
+    <a href='/HELP.html'       target="_blank"  >[指令说明]</a>
+    <a href='/upbin'               >[更新固件]</a>
+    <a href='/config.html'    target="_blank" >[系统设置]</a>
+</p>
+</center>
+
+
+<script>
+
+   function sendData(arg) {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = ready;
+      if(arg==null) arg=document.getElementById('cmd').value;
+      arg=arg.replace(/\+/g ,"_");				    //把'+'替换为'_'
+      sync=!document.getElementById("sync").checked;
+      //支持GET和POST, true=异步，false=同步阻塞等待结果
+      xhttp.open("GET", "cmd?"+arg+"&time="+new Date().getTime(), sync);      
+      xhttp.send();
+   }
+
+   function ready() {     //使用 XMLHttpRequest 对象的 responseText 接收响应数据
+      if (this.readyState == 4 && this.status == 200) {
+         var txt = this.responseText;
+         var obj = document.getElementById("RET");
+         obj.append(txt + '\n');		         //追加文本框内容
+         obj.scrollTop = obj.scrollHeight;
+          
+         var i=txt.indexOf("{");
+         if(i>=0) {
+            txt=txt.substr(i);                                //提取JSON内容
+            var XYZE = JSON.parse(txt);  
+            if(XYZE.F){
+               document.getElementById("FB").innerHTML=XYZE.F+" 脚本";
+               document.getElementById("F").href=XYZE.F;
+               document.getElementById("F").innerHTML='['+XYZE.F+']';
+            }
+            if(XYZE.E && XYZE.Cmd==0  && document.getElementById("sync").checked){
+               document.getElementById("E").value=XYZE.E; input("E","EV");
+               document.getElementById("T").value=XYZE.T; input("T","TV");
+               document.getElementById("B").value=XYZE.B; input("B","BV");
+               document.getElementById("Z").value=XYZE.Z; input("Z","ZV");
+               document.getElementById("Y").value=XYZE.Y; input("Y","YV");
+               document.getElementById("X").value=XYZE.X; input("X","XV");
+            }
+         }
+      }
+   }
+
+
+   function  send() {
+      if(event.keyCode==13){
+         sendData(document.getElementById('cmd').value);
+         document.getElementById('cmd').value='';
+      }
+   }
+
+
+   function change(i,j,v) {
+      var value = document.getElementById(i).value;
+      if(v>0) {value++;if(value>document.getElementById(i).max) value--;}
+      if(v<0) {value--;if(value<document.getElementById(i).min) value++;}
+      document.getElementById(j).innerHTML = value;
+      if(0!=v) document.getElementById(i).value=value;
+      
+      value=i+" "+value;
+      sendData(value);
+   }
+
+   function input(i,j) {
+      document.getElementById(j).innerHTML = document.getElementById(i).value;
+   }
+
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = ready;
+   xhttp.open("POST","cmd",true);        //支持GET和POST true=异步,false=同步
+   xhttp.send();
+
+   var F = new XMLHttpRequest();
+   F.onreadystatechange = ready;
+   F.open("POST","cmd?? F",true);          //支持GET和POST true=异步,false=同步
+   F.send();
+</script>
+</body>
+</html>

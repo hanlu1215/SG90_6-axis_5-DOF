@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>创客与编程</title>
+<style>
+#lyrow .aa { position:relative;max-width:100%;width:100%;min-width:100%;justify-content:center;display:flex !important; } 
+#lyrow .ll { text-align:left;font-size:18px;padding:0 5px 0 5px;white-space:nowrap; } 
+#lyrow .ss { min-width:90%;max-width:90%;width:50px !important; } 
+#lyrow .rr { justify-content:center;display:flex !important; } 
+</style>
+</head>
+<body>
+    <h1 style="text-align: center;">创客与编程-机械臂指令说明</h1>
+    <p style="text-align: center;">最多支持6个参数,角度值和坐标值支持小数点后 1位,如下</br><span style="color: red;">命令1;</span><span style="color: blue;">命令2 参数1,参数2;</span><span style="color: purple;">命令3 参数1,参数2,参数3, , ,参数6</span></br>返回 <span style="color: green;">"Cmd" 非0 </span>代表命令被放进<span style="color: green;"> 指令池 </span>排队等待执行,当前得到的各舵机角度值并非最终结果
+<div id="lyrow">
+
+<div class="rr">
+<table ><tbody>
+<tr >
+    <td class="ll">//</td>
+    <td class="ss"> </td>
+    <td class="ll">注释符号后面的整行内容,不执行</td>
+
+</tr>
+<tr >
+    <td class="ll">?</td>
+    <td class="ss"></td>
+    <td class="ll">{"X":"90.0","Y":"90.0","Z":"90.0","B":"90.0","T":"90.0","E":"90.0","Cmd":0}</td>
+</tr>
+<tr >
+    <td class="ll">? H.txt</td>
+    <td class="ss ll"></td>
+    <td class="ll">查看指定文件内容,获取设备名称 ? name; ? IP; ? F;</td>
+</tr>
+<tr >
+    <td class="ll"><br></td>
+    <td class="ss ll"></td>
+    <td class="ll"></td>
+</tr>
+<tr >
+    <td class="ll"><span style="color: white;">format</span></td>
+    <td class="ss ll"></td>
+    <td class="ll">格式化命令,删除控制板所有文件,要重新 [上传文件]</td>
+</tr>
+<tr >
+    <td class="ll">dir</td>
+    <td class="ss ll"></td>
+    <td class="ll">列出所有文件</td>
+</tr>
+<tr >
+    <td class="ll">re</td>
+    <td class="ss ll"></td>
+    <td class="ll">重启开发板</td>
+</tr>
+<tr >
+    <td class="ll">stop 0</td>
+    <td class="ss ll"></td>
+    <td class="ll">立即停止动作,并清除所有剩余未执行指令</td>
+</tr>
+<tr >
+    <td class="ll">stop -1</td>
+    <td class="ss ll"></td>
+    <td class="ll">立即暂停动作,需要恢复用 Start;&nbsp;</td>
+</tr>
+<tr >
+    <td class="ll">stop 5000</td>
+    <td class="ss ll"></td>
+    <td class="ll">强行暂停5秒后自动恢复动作</td>
+</tr>
+<tr >
+    <td class="ll">Start</td>
+    <td class="ss ll"></td>
+    <td class="ll">立即恢复之前被暂停时未执行完的动作</td>
+</tr>
+<tr >
+    <td class="ll">sync&nbsp; 1</td>
+    <td class="ss ll"></td>
+    <td class="ll">默认 1 是同步,异步为 sync 0;</td>
+</tr>
+<tr >
+    <td class="ll"><br></td>
+    <td class="ss ll"></td>
+    <td class="ll"></td>
+</tr>
+<tr >
+    <td class="ll">F</td>
+    <td class="ss ll"></td>
+    <td class="ll">指定当前文件为默认的 Auto.txt</td>
+</tr>
+<tr >
+    <td class="ll">F a.txt</td>
+    <td class="ss ll"></td>
+    <td class="ll">指定当前为 a.txt 之后 C 和 S 和 D 都对这个文件操作</td>
+</tr>
+<tr >
+    <td class="ll">C a.txt</td>
+    <td class="ss ll"></td>
+    <td class="ll">删除&nbsp; a.txt&nbsp; 文件,不指定文件名则 删除 F 指定文件</td>
+</tr>
+<tr >
+    <td class="ll">S</td>
+    <td class="ss ll"></td>
+    <td class="ll">往 F 指定文件末尾追加一条所有舵机角度状态 XYZ指令<br></td>
+</tr>
+<tr >
+    <td class="ll">S 5000</td>
+    <td class="ss ll"></td>
+    <td class="ll">往 F 指定文件末尾追加一条延时5秒指令 delay 5000</td>
+</tr>
+<tr >
+    <td class="ll">S X 90</td>
+    <td class="ss ll"></td>
+    <td class="ll">往 F 指定文件末尾追加一条动作指令&nbsp; X 90</td>
+</tr>
+<tr >
+    <td class="ll">D 3</td>
+    <td class="ss ll"></td>
+    <td class="ll">删除 F 指定文件末尾三行指令,D 删除一行</td>
+</tr>
+<tr >
+    <td class="ll">D -1</td>
+    <td class="ss ll"></td>
+    <td class="ll">删除 F 指定文件里的所有内容</td>
+</tr>
+<tr >
+    <td class="ll">SH</td>
+    <td class="ss ll"></td>
+    <td class="ll">保存当前所有舵机角度状态到 H.txt</td>
+</tr>
+<tr >
+    <td class="ll">step 0</td>
+    <td class="ss ll"></td>
+    <td class="ll">原速执行 X&nbsp; Y&nbsp; Z&nbsp; B&nbsp; T&nbsp; E 指令,&nbsp; XYZ 指令永远是减速的</td>
+</tr>
+<tr >
+    <td class="ll">step 1</td>
+    <td class="ss ll"></td>
+    <td class="ll">减速执行 X&nbsp; Y&nbsp; Z&nbsp; B&nbsp; T&nbsp;  E 指令</td>
+</tr>
+<tr >
+    <td class="ll">delay 5000</td>
+    <td class="ss ll"></td>
+    <td class="ll">延时5秒后继续往下执行</td>
+</tr>
+<tr >
+    <td class="ll"><br></td>
+    <td class="ss ll"></td>
+    <td class="ll"></td>
+</tr>
+<tr >
+    <td class="ll">H</td>
+    <td class="ss ll"></td>
+    <td class="ll">执行 H.txt 动作脚本文件</td>
+</tr>
+<tr >
+    <td class="ll">X 50.5</td>
+    <td class="ss ll"></td>
+    <td class="ll">让X转到50绝对角度, 范围 0度-180度</td>
+</tr>
+<tr >
+    <td class="ll">Y ?</td>
+    <td class="ss ll"></td>
+    <td class="ll">让Y转到 ? 随机角度.&nbsp; 可活动角度受限于机械结构配置</td>
+</tr>
+<tr >
+    <td class="ll">Z -10</td>
+    <td class="ss ll"></td>
+    <td class="ll">让Z以当前角度转到-10度的相对角度,范围受限于配置</td>
+</tr>
+<tr >
+    <td class="ll">E +5<br></td>
+    <td class="ss ll"></td>
+    <td class="ll">让E以当前角度转到 +5度的相对角度,范围受限于配置</td>
+</tr>
+<tr >
+    <td class="ll">XYZ +10,?,,,,-5</td>
+    <td class="ss ll"></td>
+    <td class="ll">以各舵机当前角度相对移动,X+10度,Y随机,ZBT不变,E-5度</td>
+</tr>
+<tr >
+    <td class="ll" colspan="2">XYZ 90,90,90,90,90,80</td>
+    <td class="ll">同时转动XYZBTE到指定角度,多舵机同时转动耗电大要外部供电</td>
+</tr>
+<tr >
+    <td class="ll"><br></td>
+    <td class="ss ll"></td>
+    <td class="ll"></td>
+</tr>
+<tr >
+    <td class="ll">time</td>
+    <td class="ss ll"></td>
+    <td class="ll">列出 倒计时 和 定时 设定,共用最多10个</td>
+</tr>
+<tr >
+    <td class="ll">time -1</td>
+    <td class="ss ll"></td>
+    <td class="ll">删除所有 倒计时 和 定时 设定</td>
+</tr>
+<tr >
+    <td class="ll">time 5</td>
+    <td class="ss ll"></td>
+    <td class="ll">删除 5号 倒计时 或 定时 设定,范围 0-9</td>
+</tr>
+<tr >
+    <td class="ll">time 5000,H.txt,1</td>
+    <td class="ss ll"></td>
+    <td class="ll">设定倒计时5秒后执行H.txt一次</td>
+</tr>
+<tr >
+    <td class="ll" colspan="2">time 2024-10-1 12:1:0 H.txt</td>
+    <td class="ll">设置定时执行 H.txt 一次.要连路由器WIFI到外网才有效</td>
+</tr>
+<tr >
+    <td class="ll" colspan="2">time ?-?-? 12:?:0 H.txt 60</td>
+    <td class="ll">不论年月日,12点时每分钟都执行 H.txt 一次,总共60次</td>
+</tr>
+<tr >
+    <td class="ll"></br></td>
+    <td class="ss ll"></td>
+    <td class="ll"></td>
+</tr>
+<tr >
+    <td class="ll" colspan="3"><span style="color: red;">HTTP接口+改成_	GET 或 POST http://IP/cmd?x 80&y _10&E -10&time=时间随机值</span></td>
+</tr>
+<tr >
+    <td class="ll" colspan="3"><span style="color: red;">电脑COM控制需要安装 CH340驱动,选择COM端口,选115200波特率,发文本型命令控制</span></td>
+</tr>
+<tr >
+    <td class="ll" colspan="3"><span style="color: red;">支持 TCP客户端与远程服务器 UDP协议  blinker.点灯物连网 控制,端口配置进 [系统设置]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</body>
+</html>
