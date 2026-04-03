@@ -1,10 +1,11 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <WiFiUdp.h>
 #include <Servo.h>
 
-// WiFi AP settings
-const char* AP_SSID = "ESP8266-Servo";
-const char* AP_PASS = "12345678";
+// Router WiFi settings (STA mode)
+const char* WIFI_SSID = "SYSU-HANLU";
+const char* WIFI_PASS = "hll123456";
 
 // Servo settings (GPIO14 = D5 on many NodeMCU boards)
 const uint8_t SERVO_PIN = 5;
@@ -12,8 +13,10 @@ const int ANGLE_MIN = 0;
 const int ANGLE_MAX = 180;
 
 ESP8266WebServer server(80);
+WiFiUDP udp;
 Servo myServo;
 int currentAngle = 90;
+const uint16_t UDP_PORT = 4210;
 
 const char INDEX_HTML[] PROGMEM = R"rawliteral(
 <!doctype html>
@@ -43,7 +46,7 @@ const char INDEX_HTML[] PROGMEM = R"rawliteral(
     <div class="row">
       <button id="sendBtn">发送角度</button>
     </div>
-    <div class="hint">连接 WiFi: ESP8266-Servo，密码: 12345678，打开 192.168.4.1</div>
+    <div class="hint">开发板将连接到路由器 WiFi，请在串口监视器查看 IP，然后在同一局域网访问该 IP</div>
   </div>
 
   <script>
@@ -101,26 +104,49 @@ void handleStatus() {
 void setup() {
   Serial.begin(115200);
   delay(100);
-
+  Serial.println();
   myServo.attach(SERVO_PIN);
   myServo.write(currentAngle);
 
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(AP_SSID, AP_PASS);
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
 
   server.on("/", HTTP_GET, handleRoot);
   server.on("/set", HTTP_GET, handleSetAngle);
   server.on("/status", HTTP_GET, handleStatus);
   server.begin();
+  udp.begin(UDP_PORT);
 
   Serial.println();
-  Serial.println("WiFi AP started");
+  Serial.println("WiFi connected");
   Serial.print("SSID: ");
-  Serial.println(AP_SSID);
+  Serial.println(WIFI_SSID);
   Serial.print("IP: ");
-  Serial.println(WiFi.softAPIP());
+  Serial.println(WiFi.localIP());
+  Serial.print("UDP port: ");
+  Serial.println(UDP_PORT);
 }
 
 void loop() {
   server.handleClient();
+
+  int packetSize = udp.parsePacket();
+  if (packetSize > 0) {
+    char buf[32];
+    int len = udp.read(buf, sizeof(buf) - 1);
+    if (len > 0) {
+      buf[len] = '\0';
+      int angle = atoi(buf);
+      angle = constrain(angle, ANGLE_MIN, ANGLE_MAX);
+      currentAngle = angle;
+      myServo.write(currentAngle);
+    }
+  }
 }
